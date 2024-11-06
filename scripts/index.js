@@ -25,5 +25,5 @@ function deleteCard(event){
 initialCards.forEach((cardParams) => {
   card = createCard(cardParams, deleteCard);
   placesList.append(card);
-});
+});   
 
