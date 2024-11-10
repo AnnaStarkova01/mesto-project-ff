@@ -1,37 +1,33 @@
-//открытие модального окна 
-export function openModalWindow(modalWindow, escCloseListener, mouseDownListener, mouseUpListener){
+//открытие модального окна
+export function openModalWindow(modalWindow){
   modalWindow.classList.add('popup_is-opened');
-  document.addEventListener('keyup', event => escCloseListener.call(this, event, modalWindow, escCloseListener, mouseDownListener, mouseUpListener));
-  document.addEventListener('mousedown', mouseDownListener);
-  document.addEventListener('mouseup', event => mouseUpListener.call(this, event, escCloseListener, mouseDownListener, mouseUpListener));
+  document.addEventListener('keyup', closeModalWindowEscape);
+  document.addEventListener('mousedown', overlayMouseDown);
+  document.addEventListener('mouseup', overlayMouseUp);
 }
 
-//закрытие модального окна 
-export function closeModalWindow(modalWindow, escCloseListener, mouseDownListener, mouseUpListener) {
+export function closeModalWindow(modalWindow) {
   modalWindow.classList.remove('popup_is-opened');
-  document.removeEventListener('keyup', escCloseListener);
-  document.removeEventListener('mousedown', mouseDownListener);
-  document.removeEventListener('mouseup', mouseUpListener);
+  document.removeEventListener('keyup', closeModalWindowEscape);
+  document.removeEventListener('mousedown', overlayMouseDown);
+  document.removeEventListener('mouseup', overlayMouseUp);
 }
 
-//esc
-export function closeModalWindowEscape (event, modalWindow, escCloseListener, mouseDownListener, mouseUpListener){
-  if (event.key === 'Escape') {
-    closeModalWindow(modalWindow, escCloseListener, mouseDownListener, mouseUpListener);
+function closeModalWindowEscape (event){ 
+  if (event.key === 'Escape') { 
+    closeModalWindow(document.querySelector('.popup_is-opened')); 
   }
 }
 
-//overlay
-export function overlayMouseDown(event){
+function overlayMouseDown(event){
   if(!event.target.classList.contains('popup_is-opened')) return;
   event.target.isClickOnThis = true;
 }
 
-export function overlayMouseUp(event, escCloseListener, mouseDownListener, mouseUpListener){
-  if (event.target.isClickOnThis && event.target.classList.contains('popup_is-opened')) {
-    event.preventDefault();
-    closeModalWindow(event.target, escCloseListener, mouseDownListener, mouseUpListener);
+function overlayMouseUp(event){ 
+  if (event.target.isClickOnThis && event.target.classList.contains('popup_is-opened')) { 
+    event.preventDefault(); 
+    closeModalWindow(event.target); 
   }
-
-  event.target.isClickOnThis = false;
+  event.target.isClickOnThis = false; 
 }

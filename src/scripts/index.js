@@ -10,9 +10,6 @@ import {
 import {
   closeModalWindow,
   openModalWindow,
-  closeModalWindowEscape,
-  overlayMouseDown,
-  overlayMouseUp
 } from '../components/modal.js';
 
 // @todo: DOM узлы
@@ -45,14 +42,6 @@ const renderCard = (cardData) => {
   return createCard(cardData, deleteCard, likeCard, openImageModalWindow)
 }
 
-const openWindowModal = (modalWindow) => {
-  return openModalWindow(modalWindow, closeModalWindowEscape, overlayMouseDown, overlayMouseUp)
-}
-
-const closeWindowModal = (modalWindow) => {
-  return closeModalWindow(modalWindow, closeModalWindowEscape, overlayMouseDown, overlayMouseUp)
-}
-
 function openImageModalWindow(event){
   openWindowImgModal.querySelector('.popup__image').removeAttribute('src');
 
@@ -61,7 +50,7 @@ function openImageModalWindow(event){
 
   openWindowImgModal.querySelector('.popup__image').setAttribute('src', event.target.src);
   openWindowImgModal.querySelector('.popup__image').setAttribute('alt', event.target.alt);
-  openWindowModal(openWindowImgModal)
+  openModalWindow(openWindowImgModal)
 }
 
 function handleFormEditProfileSubmit(evt) {
@@ -73,7 +62,7 @@ function handleFormEditProfileSubmit(evt) {
   profileTitle.textContent = nameInputValue;
   profileDescription.textContent = jobInputValue;
 
-  closeWindowModal(editModalWindow)
+  closeModalWindow(editModalWindow)
 }
 
 function handleFormNewPlaceSubmit(evt) {
@@ -86,19 +75,19 @@ function handleFormNewPlaceSubmit(evt) {
 
   formNewPlaceElement.reset()
 
-  closeWindowModal(newCardModalWindow)
+  closeModalWindow(newCardModalWindow)
 }
 
 
 // @todo: Вывести карточки на страницу
 initialCards.forEach((cardParams) => {
   placesList.append(renderCard(cardParams));
-});   
+});
 
 editModalOpen.addEventListener('click', function(){
   editModalInputName.value = profileTitle.textContent;
   editModalInputDescrition.value = profileDescription.textContent;
-  openWindowModal(editModalWindow);
+  openModalWindow(editModalWindow);
 })
 
 formEditProfileElement.addEventListener('submit', handleFormEditProfileSubmit);
@@ -106,17 +95,17 @@ formEditProfileElement.addEventListener('submit', handleFormEditProfileSubmit);
 formNewPlaceElement.addEventListener('submit', handleFormNewPlaceSubmit);
 
 newCardModalOpen.addEventListener('click', function(){
-  openWindowModal(newCardModalWindow);
+  openModalWindow(newCardModalWindow);
 });
 
 closeEditModal.addEventListener('click', function(){
-  closeWindowModal(editModalWindow);
+  closeModalWindow(editModalWindow);
 })
 
 closeNewCardModal.addEventListener('click', function(){
-  closeWindowModal(newCardModalWindow);
+  closeModalWindow(newCardModalWindow);
 });
 
 closeImgModal.addEventListener('click', function(){
-  closeWindowModal(openWindowImgModal);
+  closeModalWindow(openWindowImgModal);
 })
