@@ -12,9 +12,17 @@ export const getCards = new Promise((resolve, reject) => {
     method: 'GET',
     headers: config.headers
   })
-  .then((result) => {
-    resolve(result.json())
+  .then(res => {
+    if (!res.ok) {
+      reject(`Что-то пошло не так: ${res.status}`);
+      return
+    }
+    resolve(res.json())
+    return 
   })
+  .catch((err) => {
+    console.log(err); 
+  });
 })
 
 export const getUserMe = new Promise ((resolve, reject)=> {
@@ -22,9 +30,18 @@ export const getUserMe = new Promise ((resolve, reject)=> {
     method: 'GET',
     headers: config.headers
   })
-  .then((result) => {
-    resolve(result.json())
+  .then(res => {
+
+    if (!res.ok) {
+      reject(`Что-то пошло не так: ${res.status}`);
+      return
+    }
+    resolve(res.json())
+    return 
   })
+  .catch((err) => {
+    console.log(err); 
+  });
 })
 
 export function editProfile(name, about){
@@ -36,7 +53,14 @@ export function editProfile(name, about){
       about,
     })
   })
-  .then(res => res.json())
+  .then(res => {
+    if (res.ok) {
+      return res.json();
+    }
+  })
+  .catch((err) => {
+    console.log(err); 
+  })
 }
 
 export function addCard(name, link){
@@ -48,14 +72,28 @@ export function addCard(name, link){
       link,
     })
   })
-  .then(res => res.json())
+  .then(res => {
+    if (res.ok) {
+      return res.json();
+    }
+  })
+  .catch((err) => {
+    console.log(err); 
+  })
 }
 
 export function removeCard(idCard){
   fetch(`${config.baseUrl}/cards/${idCard}`, {
     method: 'DELETE',
     headers: config.headers
-    
+  })
+  .then(res => {
+    if (res.ok) {
+      return res.json();
+    }
+  })
+  .catch((err) => {
+    console.log(err); 
   });
 }
 
@@ -64,6 +102,14 @@ export function addLikeCard(idCard){
     method: 'PUT',
     headers: config.headers
     
+  })
+  .then(res => {
+    if (res.ok) {
+      return res.json();
+    }
+  })
+  .catch((err) => {
+    console.log(err); 
   });
 }
 
@@ -71,6 +117,14 @@ export function deleteLikeCard(idCard){
   return fetch(`${config.baseUrl}/cards/likes/${idCard}`, {
     method: 'DELETE',
     headers: config.headers
+  })
+  .then(res => {
+    if (res.ok) {
+      return res.json();
+    }
+  })
+  .catch((err) => {
+    console.log(err); 
   });
 }
 
@@ -83,5 +137,12 @@ export function editAvatar(avatar){
     })
     
   })
-  .then(res => res.json());
+  .then(res => {
+    if (res.ok) {
+      return res.json();
+    }
+  })
+  .catch((err) => {
+    console.log(err); 
+  });
 }

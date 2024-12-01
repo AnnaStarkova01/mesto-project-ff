@@ -76,8 +76,8 @@ const like = (event) => {
   } else {
     likeRequest = addLikeCard(idCard);
   }
+  
   likeRequest
-    .then(result => result.json())
     .then((result) => {
       cardElement.querySelector('.card__like-quantity').textContent = result.likes.length;
     })
