@@ -131,7 +131,6 @@ function handleFormEditProfileSubmit(evt) {
     submitButton.textContent = 'Сохранить'
     closeModalWindow(editModalWindow)
   });
-
 }
 
 function handleFormNewPlaceSubmit(evt) {
@@ -141,7 +140,6 @@ function handleFormNewPlaceSubmit(evt) {
   const typeUrlInputValue  = editModalInputTypeUrl.value;
   const submitButton = evt.currentTarget.querySelector('.popup__button')
   submitButton.textContent = 'Сохранение...'
-  console.log(cardNameInputValue, typeUrlInputValue)
   addCard(cardNameInputValue, typeUrlInputValue)
     .then(res => {
       placesList.prepend(renderCard(res, _meId));
@@ -149,7 +147,6 @@ function handleFormNewPlaceSubmit(evt) {
       submitButton.textContent = 'Сохранить'
       closeModalWindow(newCardModalWindow)
     });
-
 }
 
 
