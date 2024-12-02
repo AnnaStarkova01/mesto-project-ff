@@ -7,42 +7,28 @@ const config = {
   }
 }
 
-export const getCards = new Promise((resolve, reject) => {
-  fetch(`${config.baseUrl}/cards`, {
+function getResponseData(res) {
+  if (!res.ok) {
+      return Promise.reject(`Ошибка: ${res.status}`); 
+  }
+  return res.json();
+} 
+
+export const getCards = () => {
+  return fetch(`${config.baseUrl}/cards`, {
     method: 'GET',
     headers: config.headers
   })
-  .then(res => {
-    if (!res.ok) {
-      reject(`Что-то пошло не так: ${res.status}`);
-      return
-    }
-    resolve(res.json())
-    return 
-  })
-  .catch((err) => {
-    console.log(err); 
-  });
-})
+  .then(getResponseData);
+}
 
-export const getUserMe = new Promise ((resolve, reject)=> {
-  fetch(`${config.baseUrl}/users/me`, {
+export const getUserMe =() => {
+  return fetch(`${config.baseUrl}/users/me`, {
     method: 'GET',
     headers: config.headers
   })
-  .then(res => {
-
-    if (!res.ok) {
-      reject(`Что-то пошло не так: ${res.status}`);
-      return
-    }
-    resolve(res.json())
-    return 
-  })
-  .catch((err) => {
-    console.log(err); 
-  });
-})
+  .then(getResponseData);
+}
 
 export function editProfile(name, about){
   return fetch(`${config.baseUrl}/users/me`, {
@@ -53,14 +39,7 @@ export function editProfile(name, about){
       about,
     })
   })
-  .then(res => {
-    if (res.ok) {
-      return res.json();
-    }
-  })
-  .catch((err) => {
-    console.log(err); 
-  })
+  .then(getResponseData);
 }
 
 export function addCard(name, link){
@@ -72,29 +51,15 @@ export function addCard(name, link){
       link,
     })
   })
-  .then(res => {
-    if (res.ok) {
-      return res.json();
-    }
-  })
-  .catch((err) => {
-    console.log(err); 
-  })
+  .then(getResponseData);
 }
 
 export function removeCard(idCard){
-  fetch(`${config.baseUrl}/cards/${idCard}`, {
+  return fetch(`${config.baseUrl}/cards/${idCard}`, {
     method: 'DELETE',
     headers: config.headers
   })
-  .then(res => {
-    if (res.ok) {
-      return res.json();
-    }
-  })
-  .catch((err) => {
-    console.log(err); 
-  });
+  .then(getResponseData);
 }
 
 export function addLikeCard(idCard){
@@ -103,14 +68,7 @@ export function addLikeCard(idCard){
     headers: config.headers
     
   })
-  .then(res => {
-    if (res.ok) {
-      return res.json();
-    }
-  })
-  .catch((err) => {
-    console.log(err); 
-  });
+  .then(getResponseData);
 }
 
 export function deleteLikeCard(idCard){
@@ -118,14 +76,7 @@ export function deleteLikeCard(idCard){
     method: 'DELETE',
     headers: config.headers
   })
-  .then(res => {
-    if (res.ok) {
-      return res.json();
-    }
-  })
-  .catch((err) => {
-    console.log(err); 
-  });
+  .then(getResponseData);
 }
 
 export function editAvatar(avatar){
@@ -137,12 +88,5 @@ export function editAvatar(avatar){
     })
     
   })
-  .then(res => {
-    if (res.ok) {
-      return res.json();
-    }
-  })
-  .catch((err) => {
-    console.log(err); 
-  });
+  .then(getResponseData)
 }

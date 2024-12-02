@@ -1,4 +1,5 @@
 const showInputError = (formElement, inputElement, validationConfig) => {
+  console.log(inputElement);
   
   const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
 

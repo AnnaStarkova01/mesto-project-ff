@@ -4,6 +4,7 @@ import {
   createCard,
   deleteCard,
   likeCardListener,
+
 } from '../components/card.js';
 
 import {
@@ -19,9 +20,6 @@ import {
 import {
   editProfile,
   addCard,
-  removeCard,
-  addLikeCard,
-  deleteLikeCard,
   editAvatar,
   getUserMe,
   getCards,
@@ -61,39 +59,11 @@ const profileAvatar = document.querySelector('.profile__image');
 
 const placesList = document.querySelector('.places__list');
 
-let _meId = null;
-
-const like = (event) => {
-  const likeButtonElement = event.currentTarget;
-  const cardElement = likeButtonElement.targetElement;
-
-  let idCard = cardElement.getAttribute('id');
-  idCard = idCard.replace(/^card/, '');
-  let likeRequest = null
-
-  if (likeButtonElement.classList.contains('card__like-button_is-active')){
-    likeRequest = deleteLikeCard(idCard);
-  } else {
-    likeRequest = addLikeCard(idCard);
-  }
-  
-  likeRequest
-    .then((result) => {
-      cardElement.querySelector('.card__like-quantity').textContent = result.likes.length;
-    })
-  likeCardListener(event);
-}
-
-const removeCardElement = (event) => {
-  let idCard = event.currentTarget.targetElement.getAttribute('id');
-  idCard = idCard.replace(/^card/, '');
-  removeCard(idCard)
-  deleteCard(event)
-}
-
 const renderCard = (cardData, meId) => {
-  return createCard(cardData, meId, removeCardElement, like, openImageModalWindow)
+  return createCard(cardData, meId, deleteCard, likeCardListener, openImageModalWindow)
 }
+
+let _meId = null;
 
 const validationConfig = {
   formSelector: '.popup__form',
@@ -127,7 +97,11 @@ function handleFormEditProfileSubmit(evt) {
   editProfile(nameInputValue, jobInputValue).then((result) => {
     profileTitle.textContent = result.name;
     profileDescription.textContent = result.about; 
-    
+  })
+  .catch((err) => {
+    console.log(err); 
+  })
+  .finally(() => {
     submitButton.textContent = 'Сохранить'
     closeModalWindow(editModalWindow)
   });
@@ -145,7 +119,14 @@ function handleFormNewPlaceSubmit(evt) {
       placesList.prepend(renderCard(res, _meId));
       formNewPlaceElement.reset()
       submitButton.textContent = 'Сохранить'
+    })
+    .catch((err) => {
+      console.log(err); 
+    })
+    .finally(() => {
+      submitButton.textContent = 'Сохранить'
       closeModalWindow(newCardModalWindow)
+      clearValidation(formNewPlaceElement, validationConfig);
     });
 }
 
@@ -161,8 +142,14 @@ function editAvatarSubmit(evt){
       profileAvatar.style.backgroundImage = `url(${res.avatar})`
       formModalEditAvatar.reset()
       submitButton.textContent = 'Сохранить'
+    })
+    .catch((err) => {
+      console.log(err); 
+    })
+    .finally(() => {
       closeModalWindow(newAvatarModal);
-    });
+      clearValidation(formModalEditAvatar, validationConfig);
+    })
 }
 
 editModalAvatarButton.addEventListener('click', function(){
@@ -172,9 +159,13 @@ editModalAvatarButton.addEventListener('click', function(){
 editModalOpen.addEventListener('click', function(){
   editModalInputName.value = profileTitle.textContent;
   editModalInputDescrition.value = profileDescription.textContent;
-  openModalWindow(editModalWindow);
   clearValidation(formEditProfileElement, validationConfig);
+  openModalWindow(editModalWindow);
 })
+
+newCardModalOpen.addEventListener('click', function(){
+  openModalWindow(newCardModalWindow);
+});
 
 formModalEditAvatar.addEventListener('submit', editAvatarSubmit);
 
@@ -182,9 +173,6 @@ formEditProfileElement.addEventListener('submit', handleFormEditProfileSubmit);
 
 formNewPlaceElement.addEventListener('submit', handleFormNewPlaceSubmit);
 
-newCardModalOpen.addEventListener('click', function(){
-  openModalWindow(newCardModalWindow);
-});
 
 closeAvatarModal.addEventListener('click', function(){
   closeModalWindow(newAvatarModal);
@@ -203,7 +191,7 @@ closeImgModal.addEventListener('click', function(){
 })
 
 
-Promise.all([getCards, getUserMe])
+Promise.all([getCards(), getUserMe()])
 .then((results) => {
 
   profileTitle.textContent = results[1]['name'];

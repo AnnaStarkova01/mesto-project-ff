@@ -1,14 +1,39 @@
-
+import {
+  addLikeCard,
+  deleteLikeCard,
+  removeCard
+} from '../components/api.js'
 // @todo: Темплейт карточки
 const cardTemplate = document.querySelector('#card-template').content;
 
 export function likeCardListener(event){
-  likeCard(event.currentTarget)
+  const likeButtonElement = event.currentTarget;
+  const cardElement = likeButtonElement.targetElement;
+
+  let idCard = cardElement.getAttribute('id');
+  idCard = idCard.replace(/^card/, '');
+  let likeRequest = null
+
+  if (likeButtonElement.classList.contains('card__like-button_is-active')){
+    likeRequest = deleteLikeCard(idCard);
+  } else {
+    likeRequest = addLikeCard(idCard);
+  }
+
+  likeRequest
+    .then((result) => {
+      cardElement.querySelector('.card__like-quantity').textContent = result.likes.length;
+      likeCard(event.target)
+    })
+    .catch((err) => {
+      console.log(err); 
+    });
 }
 
 export function likeCard(cardLikeButtonElement){
   cardLikeButtonElement.classList.toggle('card__like-button_is-active')
 }
+
 // @todo: Функция создания карточки
 export function createCard(cardParams, meId, deleteFunction, likeFunction, openImageFunction){
   const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
@@ -33,14 +58,10 @@ export function createCard(cardParams, meId, deleteFunction, likeFunction, openI
   
   cardElement.querySelector('.card__title').textContent = cardParams.name;
   
-  // cardElement.querySelector('.card__like-quantity').textContent = card.likes.length;
-  
   cardImage.setAttribute('alt', cardParams.name);
   cardImage.setAttribute('src', cardParams.link);
   cardElement.setAttribute('id', `card${cardParams._id}`);
   cardImage.addEventListener('click', openImageFunction)
-  // cardLike.textContent = cardParams.likes.length;
-  //
   likeButton.addEventListener('click', likeFunction);
   likeButton.targetElement = cardElement;
   return cardElement;
@@ -48,6 +69,17 @@ export function createCard(cardParams, meId, deleteFunction, likeFunction, openI
 
 // @todo: Функция удаления карточки
 export function deleteCard(event){
-  event.currentTarget.targetElement.remove();
+  let card = event.currentTarget.targetElement;
+  let idCard = card.getAttribute('id');
+  idCard = idCard.replace(/^card/, '');
+
+  removeCard(idCard)
+  .then((result) => {
+    card.remove();
+  })
+  .catch((err) => {
+    console.log(err); 
+  });
 }
+  
 
