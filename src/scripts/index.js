@@ -97,13 +97,13 @@ function handleFormEditProfileSubmit(evt) {
   editProfile(nameInputValue, jobInputValue).then((result) => {
     profileTitle.textContent = result.name;
     profileDescription.textContent = result.about; 
+    closeModalWindow(editModalWindow)
   })
   .catch((err) => {
     console.log(err); 
   })
   .finally(() => {
     submitButton.textContent = 'Сохранить'
-    closeModalWindow(editModalWindow)
   });
 }
 
@@ -118,15 +118,14 @@ function handleFormNewPlaceSubmit(evt) {
     .then(res => {
       placesList.prepend(renderCard(res, _meId));
       formNewPlaceElement.reset()
-      submitButton.textContent = 'Сохранить'
+      closeModalWindow(newCardModalWindow)
+      clearValidation(formNewPlaceElement, validationConfig);
     })
     .catch((err) => {
       console.log(err); 
     })
     .finally(() => {
       submitButton.textContent = 'Сохранить'
-      closeModalWindow(newCardModalWindow)
-      clearValidation(formNewPlaceElement, validationConfig);
     });
 }
 
@@ -141,14 +140,14 @@ function editAvatarSubmit(evt){
     .then(res => {
       profileAvatar.style.backgroundImage = `url(${res.avatar})`
       formModalEditAvatar.reset()
-      submitButton.textContent = 'Сохранить'
+      closeModalWindow(newAvatarModal);
+      clearValidation(formModalEditAvatar, validationConfig);
     })
     .catch((err) => {
       console.log(err); 
     })
     .finally(() => {
-      closeModalWindow(newAvatarModal);
-      clearValidation(formModalEditAvatar, validationConfig);
+      submitButton.textContent = 'Сохранить'
     })
 }
 
@@ -201,5 +200,9 @@ Promise.all([getCards(), getUserMe()])
 
   results[0].forEach((card) => {
     placesList.append(renderCard(card, _meId))
-  });
-});
+  })
+
+})
+.catch((err) => {
+  console.log(err); 
+})
